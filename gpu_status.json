@@ -1,0 +1,18 @@
+{
+  "0": {
+    "status": "in_use",
+    "user_id": "U092C4FJ162",
+    "user_name": "namritha",
+    "purpose": "sft-dataset-prep [45]",
+    "claim_time": "2025-07-23T07:21:11.025167",
+    "release_time": "2025-07-23T08:21:11.025167"
+  },
+  "1": {
+    "status": "in_use",
+    "user_id": "U078FENGYBW",
+    "user_name": "ratheesha",
+    "purpose": "sft-data-prep [45]",
+    "claim_time": "2025-07-23T07:08:13.753404",
+    "release_time": "2025-07-23T08:08:13.753404"
+  }
+}
