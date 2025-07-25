@@ -2,7 +2,7 @@ from datetime import datetime
 from utils.status_manager import get_status, save_status
 from utils.slack_blocks import create_error_block, create_info_block
 
-def handle_release(args, user_id):
+def handle_release(args, user_id,user_name):
     if len(args) < 1:
         return create_error_block("Invalid Command Format", "Please use: `/gpu release <number>`\n\n*Example:* `/gpu release 0`")
 
@@ -21,4 +21,4 @@ def handle_release(args, user_id):
     status[gpu_id] = {"status": "available"}
     save_status(status)
     
-    return [{"type": "section", "text": {"type": "mrkdwn", "text": f"✅ *GPU {gpu_id} Successfully Released!*\nThank you for freeing it up! 🙏"}}]
+    return [{"type": "section", "text": {"type": "mrkdwn", "text": f"✅ *GPU {gpu_id} Successfully Released! by {user_name}*\nThank you for freeing it up! 🙏"}}]
