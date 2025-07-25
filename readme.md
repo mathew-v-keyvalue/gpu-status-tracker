@@ -1,10 +1,12 @@
 # GPU Tracker Slack Bot 🚀
 
-> A modern, interactive Slack bot to manage and monitor GPU resources in your team. Built with Python, Flask, and Slack's Block Kit for a rich, app-like experience with forms, buttons, and real-time monitoring.
+> A modern Slack bot to manage and monitor GPU resources in your team. Built with Python, Flask, and Slack's Block Kit for a rich, professional interface with comprehensive monitoring and management features.
 
-This bot allows team members to check GPU availability, claim GPU, release them after use, and get real-time performance snapshots - all within Slack's native interface.
+This bot allows team members to check GPU availability, claim GPUs for specific tasks, release them when done, and get real-time performance snapshots - all within Slack's native interface.
 
 ---
+
+## ✨ Key Features
 
 ### 📊 **Comprehensive Monitoring**
 
@@ -31,7 +33,7 @@ This bot allows team members to check GPU availability, claim GPU, release them 
 
 ## 🎮 Demo & Usage
 
-### **Interactive Dashboard (`/gpu`)**
+### **GPU Status Dashboard (`/gpu`)**
 
 ```
 🎯 GPU Allocation Dashboard
@@ -46,16 +48,23 @@ Status: Available for use
 ⏰ Until: ~4:30 PM IST
 ⏳ 2h 15m remaining
 
-[🎯 Claim GPU] [🔄 Refresh Status] [📊 Real-time View]
+💡 Use `/gpu claim <id> <purpose> [duration]` to reserve a GPU
 ```
 
-### **Smart Claim Form**
+### **Claiming a GPU**
 
-Click "🎯 Claim GPU" to open an interactive modal:
+```
+Command: /gpu claim 0 training model 2h
+Response:
+🎉 GPU 0 Successfully Claimed!
 
-- **GPU Selection**: Dropdown showing only available GPUs
-- **Purpose Field**: Describe your task (e.g., "Training BERT model")
-- **Duration Options**: 30m, 1h, 2h, 4h, 8h, 12h
+👤 User: john.doe
+📝 Purpose: training model
+⏰ Duration: 2h
+🕒 Release Time: ~4:30 PM IST
+
+💡 Remember to use `/gpu release 0` when you're done!
+```
 
 ### **Real-time Performance (`/gpu realtime`)**
 
@@ -120,15 +129,7 @@ Usage Hint: [status|realtime|claim|release|help]
 Request URL: https://your-ngrok-url.ngrok.io/
 ```
 
-#### **C. Enable Interactive Components**
-
-```
-Features → Interactive Components
-
-Request URL: https://your-ngrok-url.ngrok.io/interactive
-```
-
-#### **D. Set OAuth Permissions**
+#### **C. Set OAuth Permissions**
 
 ```
 Features → OAuth & Permissions → Scopes
@@ -136,11 +137,9 @@ Features → OAuth & Permissions → Scopes
 Bot Token Scopes:
 - commands
 - chat:write
-- im:write
-- users:read
 ```
 
-#### **E. Install to Workspace**
+#### **D. Install to Workspace**
 
 ```
 Settings → Install App → Install to Workspace
@@ -167,7 +166,6 @@ python your_bot_file.py
 Paste your ngrok URL into:
 
 - Slash Command Request URL: `https://abc123.ngrok.io/`
-- Interactive Components URL: `https://abc123.ngrok.io/interactive`
 
 ---
 
@@ -177,18 +175,11 @@ Paste your ngrok URL into:
 
 | Command                                | Description                 | Example                    |
 | -------------------------------------- | --------------------------- | -------------------------- |
-| `/gpu` or `/gpu status`                | Show interactive dashboard  | `/gpu`                     |
+| `/gpu` or `/gpu status`                | Show allocation dashboard   | `/gpu`                     |
 | `/gpu realtime`                        | Live performance monitoring | `/gpu realtime`            |
 | `/gpu claim <id> <purpose> [duration]` | Reserve a GPU               | `/gpu claim 0 training 2h` |
 | `/gpu release <id>`                    | Release your GPU            | `/gpu release 0`           |
 | `/gpu help`                            | Show help guide             | `/gpu help`                |
-
-### **Interactive Elements**
-
-- **🎯 Claim GPU Button**: Opens guided form modal
-- **🔄 Refresh Status**: Updates dashboard in real-time
-- **📊 Real-time View**: Switches to performance monitoring
-- **Release Buttons**: One-click release with confirmation
 
 ### **Duration Formats**
 
@@ -206,19 +197,15 @@ Paste your ngrok URL into:
 ### **Core Components**
 
 ```
-├── Enhanced Bot (your_bot_file.py)
+├── GPU Tracker Bot (your_bot_file.py)
 │   ├── Flask Routes
-│   │   ├── /               # Slash commands
-│   │   └── /interactive    # Buttons & modals
+│   │   └── /               # Slash commands
 │   ├── Command Handlers
-│   │   ├── handle_status()      # Dashboard with buttons
+│   │   ├── handle_status()      # Dashboard display
 │   │   ├── handle_realtime()    # Performance monitoring
 │   │   ├── handle_claim()       # GPU reservation
-│   │   └── handle_release()     # GPU release
-│   ├── Interactive Elements
-│   │   ├── create_claim_modal() # Claim form
-│   │   ├── create_action_buttons() # Dashboard buttons
-│   │   └── create_release_buttons() # Release buttons
+│   │   ├── handle_release()     # GPU release
+│   │   └── handle_help()        # Help documentation
 │   └── Utilities
 │       ├── Status management (JSON file)
 │       ├── Time parsing & formatting
@@ -227,12 +214,12 @@ Paste your ngrok URL into:
 
 ### **Data Flow**
 
-1. **User Interaction**: Slash command or button click
-2. **Route Handling**: Flask processes request
+1. **User Command**: User types slash command in Slack
+2. **Route Handling**: Flask processes the request
 3. **Business Logic**: Handler functions process the action
 4. **GPU Operations**: Status updates or nvidia-smi queries
 5. **UI Generation**: Block Kit elements created
-6. **Response**: Rich interface sent to Slack
+6. **Response**: Rich interface sent back to Slack
 
 ### **State Management**
 
@@ -282,14 +269,17 @@ elif action == "newcommand":
 #### **New Interactive Element**
 
 ```python
-def create_new_modal():
-    """Create a new modal for complex interactions."""
-    return {
-        "type": "modal",
-        "callback_id": "new_modal",
-        "title": {"type": "plain_text", "text": "New Feature"},
-        # ... modal blocks
-    }
+def create_new_block():
+    """Create a new Block Kit element for display."""
+    return [
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "*New Feature*\nDescription of the new functionality"
+            }
+        }
+    ]
 ```
 
 ### **Testing**
@@ -347,25 +337,18 @@ nvidia-smi
 # If not found, install NVIDIA drivers for your system
 ```
 
-#### **"Interactive components not working"**
+#### **"Command not recognized"**
+
+```bash
+# Check if the slash command is properly configured in Slack
+# Verify the command starts with the exact text: /gpu
+```
+
+#### **"Bot not responding"**
 
 - Verify ngrok URL is updated in Slack app settings
-- Check `/interactive` endpoint is configured
+- Check Flask server is running on port 5000
 - Ensure OAuth permissions include required scopes
-
-#### **"Modal form doesn't submit"**
-
-```python
-# Check callback_id matches in modal creation and submission handler
-"callback_id": "claim_gpu_modal"  # Must match exactly
-```
-
-#### **"Buttons not responding"**
-
-```python
-# Verify action_id values match between button creation and handler
-"action_id": "open_claim_modal"  # Must match exactly
-```
 
 ### **Debug Mode**
 
@@ -374,9 +357,9 @@ nvidia-smi
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
-# Add debug prints
-print(f"Received payload: {payload}")
-print(f"Action ID: {action_id}")
+# Add debug prints for troubleshooting
+print(f"Received command: {command_text}")
+print(f"User: {user_name} ({user_id})")
 ```
 
 ---
